@@ -1,0 +1,60 @@
+@page "/login"
+@inject SignInManager<IdentityUser> SignInManager
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.ComponentModel.DataAnnotations
+
+<h3>Login</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="username">Username:</label>
+        <InputText id="username" @bind-Value="loginModel.UserName" />
+        <ValidationMessage For="@(() => loginModel.UserName)" />
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <InputText id="password" type="password" @bind-Value="loginModel.Password" />
+        <ValidationMessage For="@(() => loginModel.Password)" />
+    </div>
+
+    <button type="submit">Login</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p>@message</p>
+}
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+    private string message;
+
+    private async Task HandleLogin()
+    {
+        var result = await SignInManager.PasswordSignInAsync(loginModel.UserName, loginModel.Password, isPersistent: true,
+        lockoutOnFailure: true);
+
+        if (result.Succeeded)
+        {
+            NavigationManager.NavigateTo("/success");
+        }
+        else
+        {
+            message = "Invalid username or password.";
+        }
+    }
+
+    private class LoginModel
+    {
+        [Required]
+        public string UserName { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
+}

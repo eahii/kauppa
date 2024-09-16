@@ -1,0 +1,47 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Web
+@namespace MyBlazorApp2.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="MyBlazorApp2.styles.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+
+<body>
+    <!-- Main Blazor Application Component -->
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+
+    <!-- Navigation Links for Login and Register -->
+    <nav>
+        <ul>
+            <li><a href="/login">Login</a></li> <!-- Link to the login page -->
+            <li><a href="/register">Register</a></li> <!-- Link to the registration page -->
+        </ul>
+    </nav>
+
+    <!-- Error UI for Blazor -->
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+</body>
+
+</html>

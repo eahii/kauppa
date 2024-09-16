@@ -1,0 +1,74 @@
+@page "/register"
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
+@using MyBlazorApp.Data
+@inject NavigationManager NavigationManager
+@inject UserManager<IdentityUser> UserManager
+
+<h3>Register</h3>
+
+<EditForm Model="@registerModel" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="username">Username:</label>
+        <InputText id="username" @bind-Value="registerModel.UserName" />
+        <ValidationMessage For="@(() => registerModel.UserName)" />
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <InputText id="password" @bind-Value="registerModel.Password" type="password" />
+        <ValidationMessage For="@(() => registerModel.Password)" />
+    </div>
+
+    <div>
+        <label for="confirmPassword">Confirm Password:</label>
+        <InputText id="confirmPassword" @bind-Value="registerModel.ConfirmPassword" type="password" />
+        <ValidationMessage For="@(() => registerModel.ConfirmPassword)" />
+    </div>
+
+    <button type="submit">Register</button>
+</EditForm>
+
+<p>@message</p>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+    private string message;
+
+    private async Task HandleRegister()
+    {
+        // Create a new user
+        var user = new IdentityUser
+            {
+                UserName = registerModel.UserName
+            };
+        var result = await UserManager.CreateAsync(user, registerModel.Password);
+
+        if (result.Succeeded)
+        {
+            message = "Successfully registered!";
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            message = "Something went wrong: " + string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+
+    private class RegisterModel
+    {
+        [Required]
+        public string UserName { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
+        [Required]
+        [Compare(nameof(Password))]
+        public string ConfirmPassword { get; set; }
+    }
+}
